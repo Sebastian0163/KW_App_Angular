@@ -25,6 +25,8 @@ namespace KW_App_Angular.Dall.Context
         }
 
         public DbSet<ApplicationUserEntities> ApplicationUsers { get; set; }
-        public DbSet<AddressEntities> Addresses { get; set; }
+       
+        public DbSet<TokenEntities> Tokens { get; set; }
+        public DbSet<ActivityEntities> Activities { get; set; }
     }
 }

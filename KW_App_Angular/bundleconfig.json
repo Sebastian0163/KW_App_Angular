@@ -1,0 +1,21 @@
+[
+  {
+    "outputFileName": "wwwroot/lib/styles/css/admin/admin.min.css",
+    "inputFiles": [
+      "wwwroot/lib/styles/css/admin/admin.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/styles/css/admin/login.min.css",
+    "inputFiles": [
+      "wwwroot/lib/styles/css/admin/login.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/styles/js/admin/admin.min.js",
+    "inputFiles": [
+      "wwwroot/lib/styles/js/admin/admin.js"
+    ],
+    "sourceMap": false
+  }
+]

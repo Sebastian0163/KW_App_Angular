@@ -20,10 +20,10 @@ namespace KW_App_Angular.Dall.Entities
         public bool Terms { get; set; }
         public bool IsEmployee { get; set; }
         public string UserRole { get; set; }
-        public DateTime AccountCreatedOn { get; set; }
+        public DateTime AccountCreatedOn { get; set; } = DateTime.Now;
         public bool RememberMe { get; set; }
         public bool IsActive { get; set; }
-        public ICollection<AddressEntities> UserAddresses { get; set; }
+       
 
     }
 }

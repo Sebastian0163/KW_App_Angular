@@ -39,7 +39,10 @@ namespace KW_App_Angular.Services.Function
                     Email = _adminUserModel.Email,
                     UserName = _adminUserModel.Username,
                     EmailConfirmed = true,
-                    ProfilePic = GetDefaultProfilePic(),      ///             
+                    ProfilePic = GetDefaultProfilePic(),      /// 
+                    AccountCreatedOn = DateTime.Now,
+                    PhoneNumber = "1234567890",
+                    PhoneNumberConfirmed = true,                                
                     Firstname = _adminUserModel.Firstname,
                     Lastname = _adminUserModel.Lastname,
                     UserRole = "Administrator",
@@ -78,8 +81,10 @@ namespace KW_App_Angular.Services.Function
                     Email = _appUserModel.Email,
                     UserName = _appUserModel.Username,
                     EmailConfirmed = true,
-                    ProfilePic = GetDefaultProfilePic(),
-
+                    AccountCreatedOn = DateTime.Now,
+                    PhoneNumber = "1234567890",
+                    PhoneNumberConfirmed = true,
+                    ProfilePic = GetDefaultProfilePic(),      ///             
                     Firstname = _appUserModel.Firstname,
                     Lastname = _appUserModel.Lastname,
                     UserRole = "Customer",
