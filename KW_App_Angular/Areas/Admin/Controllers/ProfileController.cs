@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
+using KW_App_Angular.Services.Cookie;
+using KW_App_Angular.Dall.Entities;
+using KW_App_Angular.Models.Helper;
 
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,32 +18,28 @@ namespace KW_App_Angular.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(AuthenticationSchemes = "Admin")]
-    [AutoValidateAntiforgeryToken]
+   // [AutoValidateAntiforgeryToken]
     public class ProfileController : Controller
     {
-        //private readonly ICookieSvc _cookieSvc;
-        //private readonly IServiceProvider _provider;
-        //private readonly DataProtectionKeys _dataProtectionKeys;
-        //private readonly AppSettings _appSettings;
-        //private readonly IUserSvc _userSvc;
-        //private readonly IWritableSvc<SiteWideSettings> _writableSiteWideSettings;
-        //private static AdminBaseViewModel _adminBaseViewModel;
+        private readonly ICookieService _cookieService;
+        private readonly IServiceProvider _provider;
+        private readonly DataProtectionKeys _dataProtectionKeys;
+        private readonly AppSettings _appSettings;
+        
 
-        //public ProfileController(
-        //    IUserSvc userSvc,
-        //    ICookieSvc cookieSvc,
-        //    IServiceProvider provider,
-        //    IOptions<DataProtectionKeys> dataProtectionKeys,
-        //    IOptions<AppSettings> appSettings, IWritableSvc<SiteWideSettings> writableSiteWideSettings)
-        //{
+        public ProfileController(
+            
+            IServiceProvider provider,
+            IOptions<DataProtectionKeys> dataProtectionKeys,
+            IOptions<AppSettings> appSettings)
+        {
 
-        //    _userSvc = userSvc;
-        //    _cookieSvc = cookieSvc;
-        //    _provider = provider;
-        //    _dataProtectionKeys = dataProtectionKeys.Value;
-        //    _appSettings = appSettings.Value;
-        //    _writableSiteWideSettings = writableSiteWideSettings;
-        //}
+           
+            _provider = provider;
+            _dataProtectionKeys = dataProtectionKeys.Value;
+            _appSettings = appSettings.Value;
+           
+        }
 
 
         //[HttpGet]
@@ -81,7 +80,7 @@ namespace KW_App_Angular.Areas.Admin.Controllers
         //        ResetPassword = resetPassword,
         //        SiteWideSetting = _writableSiteWideSettings.Value
         //    };
-           
+
         //}
 
     }

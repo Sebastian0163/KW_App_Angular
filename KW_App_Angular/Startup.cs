@@ -6,7 +6,7 @@ using KW_App_Angular.Services.Account;
 using KW_App_Angular.Services.Activity;
 using KW_App_Angular.Services.Cookie;
 using KW_App_Angular.Services.Filters;
-using KW_App_Angular.Services.Function;
+using KW_App_Angular.Services.Default;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -23,6 +23,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using KW_App_Angular.Models.User;
 
 namespace KW_App_Angular
 {
@@ -54,7 +55,7 @@ namespace KW_App_Angular
 
 
             #region Create App Users Models
-            services.AddTransient<IFunctionalService, FunctionalService>();
+            services.AddTransient<IDefaultService, DefaultService>();
             services.Configure<AdminUserModel>(Configuration.GetSection("AdminUserModel"));
             services.Configure<AppUserModel>(Configuration.GetSection("AppUserModel"));
             #endregion

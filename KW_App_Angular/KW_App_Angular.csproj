@@ -47,6 +47,7 @@
     <Folder Include="Areas\Admin\Views\SiteSettings\" />
     <Folder Include="Areas\Admin\Views\UserRole\" />
     <Folder Include="Areas\Admin\Views\User\" />
+    <Folder Include="Models\Account\" />
     <Folder Include="wwwroot\fonts\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>

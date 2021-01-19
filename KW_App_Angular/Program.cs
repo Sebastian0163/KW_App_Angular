@@ -1,6 +1,6 @@
 using KW_App_Angular.Dall;
 using KW_App_Angular.Dall.Context;
-using KW_App_Angular.Services.Function;
+using KW_App_Angular.Services.Default;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,7 @@ namespace KW_App_Angular
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     var dpContext = services.GetRequiredService<DataProtKeyContext>();
-                    var functionalService = services.GetRequiredService<IFunctionalService>();
+                    var functionalService = services.GetRequiredService<IDefaultService>();
                     
 
 

@@ -1,5 +1,6 @@
 ﻿using KW_App_Angular.Dall.Entities;
 using KW_App_Angular.Models;
+using KW_App_Angular.Models.User;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -9,9 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KW_App_Angular.Services.Function
+namespace KW_App_Angular.Services.Default
 {
-    public class FunctionalService : IFunctionalService
+    public class DefaultService : IDefaultService
     {
         private readonly AdminUserModel _adminUserModel;
         private readonly AppUserModel _appUserModel;
@@ -19,7 +20,7 @@ namespace KW_App_Angular.Services.Function
         
 
        
-        public FunctionalService(IOptions<AppUserModel> appUserModel,
+        public DefaultService(IOptions<AppUserModel> appUserModel,
             IOptions<AdminUserModel> adminUserModel,
             UserManager<ApplicationUserEntities> userManager)
         {

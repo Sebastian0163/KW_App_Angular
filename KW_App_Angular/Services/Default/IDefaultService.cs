@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KW_App_Angular.Services.Function
+namespace KW_App_Angular.Services.Default
 {
-    public interface IFunctionalService
+    public interface IDefaultService
     {
         Task CreateDefaultAdminUser();
         Task CreateDefaultUser();

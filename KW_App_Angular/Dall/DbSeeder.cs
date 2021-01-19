@@ -1,5 +1,5 @@
 ﻿using KW_App_Angular.Dall.Context;
-using KW_App_Angular.Services.Function;
+using KW_App_Angular.Services.Default;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace KW_App_Angular.Dall
 {
     public static class DbSeeder
     {
-        public static async Task Initialize(DataProtKeyContext dataProtKeyContext, ApplicationDbContext aplicationDbContext, IFunctionalService iFunctionalService)
+        public static async Task Initialize(DataProtKeyContext dataProtKeyContext, ApplicationDbContext aplicationDbContext, IDefaultService iFunctionalService)
         {
             // Check, if db DataProtectionKeysContext is created
             // Check, if db ApplicationDbContext is created

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KW_App_Angular.Models
+namespace KW_App_Angular.Models.User
 {
-    public class AppUserModel
+    public class AdminUserModel
     {
         public string Email { get; set; }
         public string Password { get; set; }

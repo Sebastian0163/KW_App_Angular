@@ -56,7 +56,12 @@ namespace KW_App_Angular.Services.Account
         }
         public async Task<TokenResponseModel> Auth(LoginViewModel model)
         {
-           
+            ActivityEntities activityModel = new ActivityEntities();
+            activityModel.Date = DateTime.UtcNow;
+            activityModel.IpAddress = _cookieService.GetUserIP();
+            activityModel.Location = _cookieService.GetUserCountry();
+            activityModel.OperatingSystem = _cookieService.GetUserOS();
+
             try
             {
                 // Get the User from Database
@@ -68,15 +73,23 @@ namespace KW_App_Angular.Services.Account
                 var roles = await _userManager.GetRolesAsync(user);
 
                 if (roles.FirstOrDefault() != "Administrator")
-                {
-                    
-                    Log.Error("Error : Role Not Admin");
+                {   activityModel.UserId = user.Id;
+                    activityModel.Type = "UnAuthorized  ";
+                    activityModel.Icon = "fas fa-user-secret";
+                    activityModel.Color = "danger";                   
+                    await _activityService.AddUserActivity(activityModel); 
+                    Log.Error("Error: Role not admin");
                     return CreateErrorResponseToken("Request Not Supported", HttpStatusCode.Unauthorized);
                 }
 
                 // If user is admin continue to execute the code
                 if (!await _userManager.CheckPasswordAsync(user, model.Password))
                 {
+                    activityModel.UserId = user.Id;
+                    activityModel.Type = "Password Login Error";
+                    activityModel.Icon = "far fa-times-circle";
+                    activityModel.Color = "warning";
+                    await _activityService.AddUserActivity(activityModel);
                     Log.Error("Error : Invalid Password for Admin");
                     return CreateErrorResponseToken("Request Not Supported", HttpStatusCode.Unauthorized);
                 }
@@ -84,16 +97,20 @@ namespace KW_App_Angular.Services.Account
                 // Then Check If Email Is confirmed
                 if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
-                   
+                    activityModel.UserId = user.Id;
+                    activityModel.Type = "Email not Verified";
+                    activityModel.Icon = "far fa-envelope";
+                    activityModel.Color = "warning";
+                    await _activityService.AddUserActivity(activityModel);
                     Log.Error("Error : Email Not Confirmed for {user}", user.UserName);
                     return CreateErrorResponseToken("Email Not Confirmed", HttpStatusCode.Unauthorized);
                 }
 
-                //activityModel.UserId = user.Id;
-                //activityModel.Type = "Login attempt successful";
-                //activityModel.Icon = "fas fa-thumbs-up";
-                //activityModel.Color = "success";
-                //await _activityService.AddUserActivity(activityModel);
+                activityModel.UserId = user.Id;
+                activityModel.Type = "Login successful";
+                activityModel.Icon = "fas fa-thumbs-up";
+                activityModel.Color = "success";
+                await _activityService.AddUserActivity(activityModel);
                 var authToken = await GenerateNewToken(user, model);
                 return authToken;
             }
