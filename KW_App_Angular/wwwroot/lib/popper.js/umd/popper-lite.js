@@ -1,5 +1,5 @@
 /**
- * @popperjs/core v2.6.0 - MIT License
+ * @popperjs/core v2.4.3 - MIT License
  */
 
 (function (global, factory) {
@@ -28,7 +28,7 @@
   function getWindow(node) {
     if (node.toString() !== '[object Window]') {
       var ownerDocument = node.ownerDocument;
-      return ownerDocument ? ownerDocument.defaultView || window : window;
+      return ownerDocument ? ownerDocument.defaultView : window;
     }
 
     return node;
@@ -59,14 +59,6 @@
     var OwnElement = getWindow(node).HTMLElement;
     return node instanceof OwnElement || node instanceof HTMLElement;
   }
-  /*:: declare function isShadowRoot(node: mixed): boolean %checks(node instanceof
-    ShadowRoot); */
-
-
-  function isShadowRoot(node) {
-    var OwnElement = getWindow(node).ShadowRoot;
-    return node instanceof OwnElement || node instanceof ShadowRoot;
-  }
 
   function getHTMLElementScroll(element) {
     return {
@@ -88,9 +80,8 @@
   }
 
   function getDocumentElement(element) {
-    // $FlowFixMe[incompatible-return]: assume body is always available
-    return ((isElement(element) ? element.ownerDocument : // $FlowFixMe[prop-missing]
-    element.document) || window.document).documentElement;
+    // $FlowFixMe: assume body is always available
+    return (isElement(element) ? element.ownerDocument : element.document).documentElement;
   }
 
   function getWindowScrollBarX(element) {
@@ -176,14 +167,12 @@
       return element;
     }
 
-    return (// this is a quicker (but less type safe) way to save quite some bytes from the bundle
-      // $FlowFixMe[incompatible-return]
-      // $FlowFixMe[prop-missing]
+    return (// $FlowFixMe: this is a quicker (but less type safe) way to save quite some bytes from the bundle
       element.assignedSlot || // step into the shadow DOM of the parent of a slotted node
       element.parentNode || // DOM Element detected
-      // $FlowFixMe[incompatible-return]: need a better way to handle this...
+      // $FlowFixMe: need a better way to handle this...
       element.host || // ShadowRoot detected
-      // $FlowFixMe[incompatible-call]: HTMLElement is a Node
+      // $FlowFixMe: HTMLElement is a Node
       getDocumentElement(element) // fallback
 
     );
@@ -191,7 +180,7 @@
 
   function getScrollParent(node) {
     if (['html', 'body', '#document'].indexOf(getNodeName(node)) >= 0) {
-      // $FlowFixMe[incompatible-return]: assume body is always available
+      // $FlowFixMe: assume body is always available
       return node.ownerDocument.body;
     }
 
@@ -205,7 +194,7 @@
   /*
   given a DOM element, return the list of all scroll parents, up the list of ancesors
   until we get to the top window object. This list is what we attach scroll listeners
-  to, because if any of these parent elements scroll, we'll need to re-calculate the
+  to, because if any of these parent elements scroll, we'll need to re-calculate the 
   reference element's position.
   */
 
@@ -219,7 +208,7 @@
     var win = getWindow(scrollParent);
     var target = isBody ? [win].concat(win.visualViewport || [], isScrollParent(scrollParent) ? scrollParent : []) : scrollParent;
     var updatedList = list.concat(target);
-    return isBody ? updatedList : // $FlowFixMe[incompatible-call]: isBody tells us target will be an HTMLElement here
+    return isBody ? updatedList : // $FlowFixMe: isBody tells us target will be an HTMLElement here
     updatedList.concat(listScrollParents(getParentNode(target)));
   }
 
@@ -545,18 +534,19 @@
   }
 
   function contains(parent, child) {
-    var rootNode = child.getRootNode && child.getRootNode(); // First, attempt with faster native method
+    // $FlowFixMe: hasOwnProperty doesn't seem to work in tests
+    var isShadow = Boolean(child.getRootNode && child.getRootNode().host); // First, attempt with faster native method
 
     if (parent.contains(child)) {
       return true;
     } // then fallback to custom implementation with Shadow DOM support
-    else if (rootNode && isShadowRoot(rootNode)) {
+    else if (isShadow) {
         var next = child;
 
         do {
           if (next && parent.isSameNode(next)) {
             return true;
-          } // $FlowFixMe[prop-missing]: need a better way to handle this...
+          } // $FlowFixMe: need a better way to handle this...
 
 
           next = next.parentNode || next.host;
@@ -597,13 +587,13 @@
 
 
   function getClippingParents(element) {
-    var clippingParents = listScrollParents(getParentNode(element));
+    var clippingParents = listScrollParents(element);
     var canEscapeClipping = ['absolute', 'fixed'].indexOf(getComputedStyle(element).position) >= 0;
     var clipperElement = canEscapeClipping && isHTMLElement(element) ? getOffsetParent(element) : element;
 
     if (!isElement(clipperElement)) {
       return [];
-    } // $FlowFixMe[incompatible-return]: https://github.com/facebook/flow/issues/1414
+    } // $FlowFixMe: https://github.com/facebook/flow/issues/1414
 
 
     return clippingParents.filter(function (clippingParent) {
@@ -693,11 +683,11 @@
 
       switch (variation) {
         case start:
-          offsets[mainAxis] = offsets[mainAxis] - (reference[len] / 2 - element[len] / 2);
+          offsets[mainAxis] = Math.floor(offsets[mainAxis]) - Math.floor(reference[len] / 2 - element[len] / 2);
           break;
 
         case end:
-          offsets[mainAxis] = offsets[mainAxis] + (reference[len] / 2 - element[len] / 2);
+          offsets[mainAxis] = Math.floor(offsets[mainAxis]) + Math.ceil(reference[len] / 2 - element[len] / 2);
           break;
       }
     }
@@ -1103,7 +1093,7 @@
   // Zooming can change the DPR, but it seems to report a value that will
   // cleanly divide the values into the appropriate subpixels.
 
-  function roundOffsetsByDPR(_ref) {
+  function roundOffsets(_ref) {
     var x = _ref.x,
         y = _ref.y;
     var win = window;
@@ -1123,14 +1113,11 @@
         offsets = _ref2.offsets,
         position = _ref2.position,
         gpuAcceleration = _ref2.gpuAcceleration,
-        adaptive = _ref2.adaptive,
-        roundOffsets = _ref2.roundOffsets;
+        adaptive = _ref2.adaptive;
 
-    var _ref3 = roundOffsets ? roundOffsetsByDPR(offsets) : offsets,
-        _ref3$x = _ref3.x,
-        x = _ref3$x === void 0 ? 0 : _ref3$x,
-        _ref3$y = _ref3.y,
-        y = _ref3$y === void 0 ? 0 : _ref3$y;
+    var _roundOffsets = roundOffsets(offsets),
+        x = _roundOffsets.x,
+        y = _roundOffsets.y;
 
     var hasX = offsets.hasOwnProperty('x');
     var hasY = offsets.hasOwnProperty('y');
@@ -1143,7 +1130,7 @@
 
       if (offsetParent === getWindow(popper)) {
         offsetParent = getDocumentElement(popper);
-      } // $FlowFixMe[incompatible-cast]: force type refinement, we compare offsetParent with window above, but Flow doesn't detect it
+      } // $FlowFixMe: force type refinement, we compare offsetParent with window above, but Flow doesn't detect it
 
       /*:: offsetParent = (offsetParent: Element); */
 
@@ -1174,15 +1161,13 @@
     return Object.assign(Object.assign({}, commonStyles), {}, (_Object$assign2 = {}, _Object$assign2[sideY] = hasY ? y + "px" : '', _Object$assign2[sideX] = hasX ? x + "px" : '', _Object$assign2.transform = '', _Object$assign2));
   }
 
-  function computeStyles(_ref4) {
-    var state = _ref4.state,
-        options = _ref4.options;
+  function computeStyles(_ref3) {
+    var state = _ref3.state,
+        options = _ref3.options;
     var _options$gpuAccelerat = options.gpuAcceleration,
         gpuAcceleration = _options$gpuAccelerat === void 0 ? true : _options$gpuAccelerat,
         _options$adaptive = options.adaptive,
-        adaptive = _options$adaptive === void 0 ? true : _options$adaptive,
-        _options$roundOffsets = options.roundOffsets,
-        roundOffsets = _options$roundOffsets === void 0 ? true : _options$roundOffsets;
+        adaptive = _options$adaptive === void 0 ? true : _options$adaptive;
 
     {
       var transitionProperty = getComputedStyle(state.elements.popper).transitionProperty || '';
@@ -1205,8 +1190,7 @@
       state.styles.popper = Object.assign(Object.assign({}, state.styles.popper), mapToStyles(Object.assign(Object.assign({}, commonStyles), {}, {
         offsets: state.modifiersData.popperOffsets,
         position: state.options.strategy,
-        adaptive: adaptive,
-        roundOffsets: roundOffsets
+        adaptive: adaptive
       })));
     }
 
@@ -1214,8 +1198,7 @@
       state.styles.arrow = Object.assign(Object.assign({}, state.styles.arrow), mapToStyles(Object.assign(Object.assign({}, commonStyles), {}, {
         offsets: state.modifiersData.arrow,
         position: 'absolute',
-        adaptive: false,
-        roundOffsets: roundOffsets
+        adaptive: false
       })));
     }
 
@@ -1246,7 +1229,7 @@
         return;
       } // Flow doesn't support to extend this property, but it's the most
       // effective way to apply styles to an HTMLElement
-      // $FlowFixMe[cannot-write]
+      // $FlowFixMe
 
 
       Object.assign(element.style, style);
@@ -1295,7 +1278,10 @@
 
         if (!isHTMLElement(element) || !getNodeName(element)) {
           return;
-        }
+        } // Flow doesn't support to extend this property, but it's the most
+        // effective way to apply styles to an HTMLElement
+        // $FlowFixMe
+
 
         Object.assign(element.style, style);
         Object.keys(attributes).forEach(function (attribute) {

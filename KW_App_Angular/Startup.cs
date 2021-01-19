@@ -5,7 +5,7 @@ using KW_App_Angular.Models.Helper;
 using KW_App_Angular.Services.Account;
 using KW_App_Angular.Services.Activity;
 using KW_App_Angular.Services.Cookie;
-using KW_App_Angular.Services.Filters;
+using KW_App_Angular.Services.Handler;
 using KW_App_Angular.Services.Default;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using KW_App_Angular.Models.User;
+using KW_App_Angular.Services.User;
 
 namespace KW_App_Angular
 {
@@ -96,8 +97,8 @@ namespace KW_App_Angular
             var dataProtectionSection = Configuration.GetSection("DataProtectionKeys");
             services.Configure<DataProtectionKeys>(dataProtectionSection);
             services.AddDataProtection().PersistKeysToDbContext<DataProtKeyContext>();
-            #endregion 
-
+            #endregion
+          
 
             #region       APPSETTINGS SERVICE     
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -128,17 +129,35 @@ namespace KW_App_Angular
                 };
             });
             #endregion
+           
+            services.AddTransient<IUserService, UserService>();
                       
             services.AddTransient<IAccountService, AccountService>();
 
             services.AddTransient<IActivityService, ActivityService>();
-            
-           
-            
-           /*Razor Pages Runtime SERVICE                                       
-           Add Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation NuGet package to the project                
-           Surprised that refreshing a view while the app is running did not work                            */
-          services.AddAuthentication("Administrator").AddScheme<AdminAuthenticationOptions, AdminAuthenticationHandler>("Admin", null);
+
+            # region ENABLE CORS 
+            services.AddCors(options => {
+                options.AddPolicy("EnableCORS", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().Build();
+                });
+            });
+            #endregion
+            #region   ENABLE API Versioning             
+            services.AddApiVersioning(
+               options =>
+               {
+                   options.ReportApiVersions = true;
+                   options.AssumeDefaultVersionWhenUnspecified = true;
+                   options.DefaultApiVersion = new ApiVersion(1, 0);
+               });
+            #endregion
+
+            /*Razor Pages Runtime SERVICE                                       
+            Add Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation NuGet package to the project                
+            Surprised that refreshing a view while the app is running did not work                            */
+            services.AddAuthentication("Administrator").AddScheme<AdminAuthenticationOptions, AdminAuthenticationHandler>("Admin", null);
 
             #endregion
 
@@ -171,6 +190,7 @@ namespace KW_App_Angular
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("EnableCORS");
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {

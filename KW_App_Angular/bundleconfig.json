@@ -1,20 +1,20 @@
 [
   {
-    "outputFileName": "wwwroot/lib/styles/css/admin/admin.min.css",
+    "outputFileName": "wwwroot/lib/custom/css/admin/admin.min.css",
     "inputFiles": [
-      "wwwroot/lib/styles/css/admin/admin.css"
+      "wwwroot/lib/custom/css/admin/admin.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/lib/styles/css/admin/login.min.css",
+    "outputFileName": "wwwroot/lib/custom/css/admin/login.min.css",
     "inputFiles": [
-      "wwwroot/lib/styles/css/admin/login.css"
+      "wwwroot/lib/custom/css/admin/login.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/lib/styles/js/admin/admin.min.js",
+    "outputFileName": "wwwroot/lib/custom/js/admin/admin.min.js",
     "inputFiles": [
-      "wwwroot/lib/styles/js/admin/admin.js"
+      "wwwroot/lib/custom/js/admin/admin.js"
     ],
     "sourceMap": false
   }

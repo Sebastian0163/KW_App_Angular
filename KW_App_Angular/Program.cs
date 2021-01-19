@@ -28,11 +28,9 @@ namespace KW_App_Angular
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     var dpContext = services.GetRequiredService<DataProtKeyContext>();
-                    var functionalService = services.GetRequiredService<IDefaultService>();
+                    var defaultService = services.GetRequiredService<IDefaultService>();
                     
-
-
-                    DbSeeder.Initialize(dpContext, context, functionalService).Wait();
+                    DbSeeder.Initialize(dpContext, context, defaultService).Wait();
                 }
                 catch (Exception ex)
                 {

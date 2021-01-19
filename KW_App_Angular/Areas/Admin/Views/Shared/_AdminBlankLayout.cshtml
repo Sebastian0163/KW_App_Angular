@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <meta name="description" content="Welcome to the Super Admin Panel of Car Dealer" />
-    <meta name="author" content="Techhowdy" />
+    <meta name="author" content="KeysWine" />
     <!-- Favicon icon -->
     <link href="~/favicon.ico" rel="icon" />
     <environment include="Development">
@@ -48,23 +48,7 @@
 
     </div>
 
-
-    <environment include="Development">
-        <script src="~/lib/jquery/jquery.js"></script>
-        <!-- Bootstrap tether Core JavaScript -->
-        <script src="~/lib/popper.js/umd/popper.js"></script>
-        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
-        <!-- Custom JS -->
-        <script src="~/lib/custom/js/admin/admin.js"></script>
-
-
-    </environment>
-    <environment exclude="Development">
-        <script src="~/lib/jquery/jquery.min.js"></script>
-        <script src="~/lib/popper.js/umd/popper.min.js"></script>
-        <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-        <script src="~/lib/custom/js/admin/admin.min.js"></script>
-    </environment>
+    @await Html.PartialAsync("_ScriptsUIPartial")
     @RenderSection("Scripts", required: false)
 </body>
 
