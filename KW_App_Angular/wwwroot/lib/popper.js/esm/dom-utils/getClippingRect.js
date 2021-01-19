@@ -7,7 +7,6 @@ import getDocumentElement from "./getDocumentElement.js";
 import getComputedStyle from "./getComputedStyle.js";
 import { isElement, isHTMLElement } from "./instanceOf.js";
 import getBoundingClientRect from "./getBoundingClientRect.js";
-import getParentNode from "./getParentNode.js";
 import contains from "./contains.js";
 import getNodeName from "./getNodeName.js";
 import rectToClientRect from "../utils/rectToClientRect.js";
@@ -33,13 +32,13 @@ function getClientRectFromMixedType(element, clippingParent) {
 
 
 function getClippingParents(element) {
-  var clippingParents = listScrollParents(getParentNode(element));
+  var clippingParents = listScrollParents(element);
   var canEscapeClipping = ['absolute', 'fixed'].indexOf(getComputedStyle(element).position) >= 0;
   var clipperElement = canEscapeClipping && isHTMLElement(element) ? getOffsetParent(element) : element;
 
   if (!isElement(clipperElement)) {
     return [];
-  } // $FlowFixMe[incompatible-return]: https://github.com/facebook/flow/issues/1414
+  } // $FlowFixMe: https://github.com/facebook/flow/issues/1414
 
 
   return clippingParents.filter(function (clippingParent) {

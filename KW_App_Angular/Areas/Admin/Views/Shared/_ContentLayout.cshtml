@@ -1,0 +1,38 @@
+﻿@model KW_App_Angular.Models.Admin.AdminBaseViewModel
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>ADMIN | Page</title>
+    <meta name="description" content="Cms Application Buils with Asp.net Core 3.0 and Angular 10" />
+    <meta name="author" content="KeysWine" />
+    <!-- Favicon icon -->
+    <link href="~/favicon.ico" rel="icon" />
+    @await Html.PartialAsync("_StylesApplicationHeaderPartial")
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+
+    <!-- ============================================================== -->
+    <!-- Main wrapper -->
+    <!-- ============================================================== -->
+    <div class="wrapper">
+        @await Html.PartialAsync("_SidebarLayout")
+        <div id="content">
+            @await Html.PartialAsync("_TopbarLayout")
+            @RenderBody()
+        </div>
+
+
+        @await Html.PartialAsync("_FooterLayout")
+    </div>
+
+
+    @await Html.PartialAsync("_ScriptsUIPartial")
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

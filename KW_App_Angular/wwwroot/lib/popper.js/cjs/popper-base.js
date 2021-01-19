@@ -1,5 +1,5 @@
 /**
- * @popperjs/core v2.6.0 - MIT License
+ * @popperjs/core v2.4.3 - MIT License
  */
 
 'use strict';
@@ -26,7 +26,7 @@ function getBoundingClientRect(element) {
 function getWindow(node) {
   if (node.toString() !== '[object Window]') {
     var ownerDocument = node.ownerDocument;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
+    return ownerDocument ? ownerDocument.defaultView : window;
   }
 
   return node;
@@ -57,14 +57,6 @@ function isHTMLElement(node) {
   var OwnElement = getWindow(node).HTMLElement;
   return node instanceof OwnElement || node instanceof HTMLElement;
 }
-/*:: declare function isShadowRoot(node: mixed): boolean %checks(node instanceof
-  ShadowRoot); */
-
-
-function isShadowRoot(node) {
-  var OwnElement = getWindow(node).ShadowRoot;
-  return node instanceof OwnElement || node instanceof ShadowRoot;
-}
 
 function getHTMLElementScroll(element) {
   return {
@@ -86,9 +78,8 @@ function getNodeName(element) {
 }
 
 function getDocumentElement(element) {
-  // $FlowFixMe[incompatible-return]: assume body is always available
-  return ((isElement(element) ? element.ownerDocument : // $FlowFixMe[prop-missing]
-  element.document) || window.document).documentElement;
+  // $FlowFixMe: assume body is always available
+  return (isElement(element) ? element.ownerDocument : element.document).documentElement;
 }
 
 function getWindowScrollBarX(element) {
@@ -174,14 +165,12 @@ function getParentNode(element) {
     return element;
   }
 
-  return (// this is a quicker (but less type safe) way to save quite some bytes from the bundle
-    // $FlowFixMe[incompatible-return]
-    // $FlowFixMe[prop-missing]
+  return (// $FlowFixMe: this is a quicker (but less type safe) way to save quite some bytes from the bundle
     element.assignedSlot || // step into the shadow DOM of the parent of a slotted node
     element.parentNode || // DOM Element detected
-    // $FlowFixMe[incompatible-return]: need a better way to handle this...
+    // $FlowFixMe: need a better way to handle this...
     element.host || // ShadowRoot detected
-    // $FlowFixMe[incompatible-call]: HTMLElement is a Node
+    // $FlowFixMe: HTMLElement is a Node
     getDocumentElement(element) // fallback
 
   );
@@ -189,7 +178,7 @@ function getParentNode(element) {
 
 function getScrollParent(node) {
   if (['html', 'body', '#document'].indexOf(getNodeName(node)) >= 0) {
-    // $FlowFixMe[incompatible-return]: assume body is always available
+    // $FlowFixMe: assume body is always available
     return node.ownerDocument.body;
   }
 
@@ -203,7 +192,7 @@ function getScrollParent(node) {
 /*
 given a DOM element, return the list of all scroll parents, up the list of ancesors
 until we get to the top window object. This list is what we attach scroll listeners
-to, because if any of these parent elements scroll, we'll need to re-calculate the
+to, because if any of these parent elements scroll, we'll need to re-calculate the 
 reference element's position.
 */
 
@@ -217,7 +206,7 @@ function listScrollParents(element, list) {
   var win = getWindow(scrollParent);
   var target = isBody ? [win].concat(win.visualViewport || [], isScrollParent(scrollParent) ? scrollParent : []) : scrollParent;
   var updatedList = list.concat(target);
-  return isBody ? updatedList : // $FlowFixMe[incompatible-call]: isBody tells us target will be an HTMLElement here
+  return isBody ? updatedList : // $FlowFixMe: isBody tells us target will be an HTMLElement here
   updatedList.concat(listScrollParents(getParentNode(target)));
 }
 
@@ -543,18 +532,19 @@ function getDocumentRect(element) {
 }
 
 function contains(parent, child) {
-  var rootNode = child.getRootNode && child.getRootNode(); // First, attempt with faster native method
+  // $FlowFixMe: hasOwnProperty doesn't seem to work in tests
+  var isShadow = Boolean(child.getRootNode && child.getRootNode().host); // First, attempt with faster native method
 
   if (parent.contains(child)) {
     return true;
   } // then fallback to custom implementation with Shadow DOM support
-  else if (rootNode && isShadowRoot(rootNode)) {
+  else if (isShadow) {
       var next = child;
 
       do {
         if (next && parent.isSameNode(next)) {
           return true;
-        } // $FlowFixMe[prop-missing]: need a better way to handle this...
+        } // $FlowFixMe: need a better way to handle this...
 
 
         next = next.parentNode || next.host;
@@ -595,13 +585,13 @@ function getClientRectFromMixedType(element, clippingParent) {
 
 
 function getClippingParents(element) {
-  var clippingParents = listScrollParents(getParentNode(element));
+  var clippingParents = listScrollParents(element);
   var canEscapeClipping = ['absolute', 'fixed'].indexOf(getComputedStyle(element).position) >= 0;
   var clipperElement = canEscapeClipping && isHTMLElement(element) ? getOffsetParent(element) : element;
 
   if (!isElement(clipperElement)) {
     return [];
-  } // $FlowFixMe[incompatible-return]: https://github.com/facebook/flow/issues/1414
+  } // $FlowFixMe: https://github.com/facebook/flow/issues/1414
 
 
   return clippingParents.filter(function (clippingParent) {
@@ -691,11 +681,11 @@ function computeOffsets(_ref) {
 
     switch (variation) {
       case start:
-        offsets[mainAxis] = offsets[mainAxis] - (reference[len] / 2 - element[len] / 2);
+        offsets[mainAxis] = Math.floor(offsets[mainAxis]) - Math.floor(reference[len] / 2 - element[len] / 2);
         break;
 
       case end:
-        offsets[mainAxis] = offsets[mainAxis] + (reference[len] / 2 - element[len] / 2);
+        offsets[mainAxis] = Math.floor(offsets[mainAxis]) + Math.ceil(reference[len] / 2 - element[len] / 2);
         break;
     }
   }

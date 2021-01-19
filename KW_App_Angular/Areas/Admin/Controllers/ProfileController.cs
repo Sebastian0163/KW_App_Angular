@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 using KW_App_Angular.Services.Cookie;
 using KW_App_Angular.Dall.Entities;
 using KW_App_Angular.Models.Helper;
+using KW_App_Angular.Services.User;
+using KW_App_Angular.Models;
+using KW_App_Angular.Models.Admin;
 
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,64 +27,64 @@ namespace KW_App_Angular.Areas.Admin.Controllers
         private readonly ICookieService _cookieService;
         private readonly IServiceProvider _provider;
         private readonly DataProtectionKeys _dataProtectionKeys;
-        private readonly AppSettings _appSettings;
-        
+        //private readonly AppSettings _appSettings;
+        private readonly IUserService _userService;
+        private static AdminBaseViewModel _adminBaseViewModel;
+
 
         public ProfileController(
-            
+            ICookieService cookieService,
+            IUserService userService,
             IServiceProvider provider,
-            IOptions<DataProtectionKeys> dataProtectionKeys,
-            IOptions<AppSettings> appSettings)
+            IOptions<DataProtectionKeys> dataProtectionKeys)
+            
         {
-
-           
+            _userService = userService;
+            _cookieService = cookieService;           
             _provider = provider;
             _dataProtectionKeys = dataProtectionKeys.Value;
-            _appSettings = appSettings.Value;
+         
            
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> Index()
-        //{
-        //    await SetAdminBaseViewModel();
-        //    return View("Index", _adminBaseViewModel);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            await SetAdminBaseViewModel();
+            return View("Index", _adminBaseViewModel);
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Security()
-        //{
-        //    await SetAdminBaseViewModel();
-        //    return View("Security", _adminBaseViewModel);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Security()
+        {
+            await SetAdminBaseViewModel();
+            return View("Security", _adminBaseViewModel);
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Activity()
-        //{
-        //    await SetAdminBaseViewModel();
-        //    return View("Activity", _adminBaseViewModel);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Activity()
+        {
+            await SetAdminBaseViewModel();
+            return View("Activity", _adminBaseViewModel);
+        }
 
 
-        //private async Task SetAdminBaseViewModel()
-        //{
-        //    var protectorProvider = _provider.GetService<IDataProtectionProvider>();
-        //    var protector = protectorProvider.CreateProtector(_dataProtectionKeys.ApplicationUserKey);
-        //    var userProfile = await _userSvc.GetUserProfileByIdAsync(protector.Unprotect(_cookieSvc.Get("user_id")));
-        //    var resetPassword = new ResetPasswordViewModel();
+        private async Task SetAdminBaseViewModel()
+        {
+            var protectorProvider = _provider.GetService<IDataProtectionProvider>();
+            var protector = protectorProvider.CreateProtector(_dataProtectionKeys.ApplicationUserKey);
+            var userProfile = await _userService.GetUserProfileByIdAsync(protector.Unprotect(_cookieService.Get("user_id")));
+            var resetPassword = new ResetPasswordViewModel();
 
-        //    _adminBaseViewModel = new AdminBaseViewModel
-        //    {
-        //        Profile = userProfile,
-        //        AddUser = null,
-        //        AppSetting = null,
-        //        Dashboard = null,
-        //        ResetPassword = resetPassword,
-        //        SiteWideSetting = _writableSiteWideSettings.Value
-        //    };
+            _adminBaseViewModel = new AdminBaseViewModel
+            {
+                Profile = userProfile,
+                ResetPassword = resetPassword,
+               
+            };
 
-        //}
+        }
 
     }
 }

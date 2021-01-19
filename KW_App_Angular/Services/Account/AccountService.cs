@@ -34,12 +34,12 @@ namespace KW_App_Angular.Services.Account
         private readonly IServiceProvider _provider;
         private readonly DataProtectionKeys _dataProtectionKeys;
         private readonly IActivityService _activityService;
-        private IDataProtector _protector;
-        private string[] UserRoles = new[] { "Administrator", "Customer" };
-        private TokenValidationParameters validationParameters;
-        private JwtSecurityTokenHandler handler;
-        private string unProtectedToken;
-        private ClaimsPrincipal validateToken;
+        //private IDataProtector _protector;
+        //private string[] UserRoles = new[] { "Administrator", "Customer" };
+        //private TokenValidationParameters validationParameters;
+        //private JwtSecurityTokenHandler handler;
+        //private string unProtectedToken;
+        //private ClaimsPrincipal validateToken;
 
         public AccountService(UserManager<ApplicationUserEntities> userManager,
             IOptions<AppSettings> appSettings, IOptions<DataProtectionKeys> dataProtectionKeys,

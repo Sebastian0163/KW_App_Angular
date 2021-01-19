@@ -28,7 +28,7 @@ namespace KW_App_Angular.Areas.Admin.Controllers
         { return View(); }
 
         private readonly AppSettings _appSettings;
-        private DataProtectionKeys _dataProtectionKeys;
+        private readonly DataProtectionKeys _dataProtectionKeys;
         private readonly IServiceProvider _provider;
         private readonly ApplicationDbContext _db;
         private readonly IAccountService _accountService;
